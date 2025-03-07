@@ -1,0 +1,7 @@
+openai-whisper
+gradio
+sounddevice
+numpy
+python-docx
+pydub
+ffmpeg-python
