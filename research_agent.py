@@ -9,6 +9,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from sentence_transformers import SentenceTransformer 
 from IPython.display import display, Image
+from databases import ResearchDatabase
 from typing import TypedDict
 import pprint
 import os
@@ -176,7 +177,7 @@ The user's topic is: {query}
 
     chain = prompt | llm_query
     response = chain.invoke({"query": query})
-    return response
+    return response.content
 
 
 # query = "research about cats"
@@ -323,9 +324,19 @@ The user's topic is: {query}
     )
 
     chain = prompt | llm_structure
-    structure_response = chain.invoke({'query': query})
-    return structure_response
+    response = chain.invoke({'query': query})
+    return response.content
 
 # query = "cats"
 # structure = create_researh_structure(query)
 # print(structure)
+query = "Emotional Intelligence In Humanity"
+search_response = create_multiple_queries(query)
+structure_response= create_researh_structure(query)
+
+#initializing the db
+db = ResearchDatabase()
+db.insert_research_entry(query, search_response, structure_response)
+records = db.fetch_all_entries()
+for record in records:
+    print(f" ID: {record[0]}, Query: {record[1]}, questions: {record[2]}, Research Structure: {record[3]}, Time: {record[4]}")
